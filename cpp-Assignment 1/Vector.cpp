@@ -1,7 +1,7 @@
 
-#ifdef __cplusplus
-#include "Vector.h" // include definition of class vector 
 
+#include "Vector.h" // include definition of class vector 
+#include <iostream>
 // empty container constructor (default constructor)
 // Constructs an empty container, with no elements.
 vector::vector()
@@ -40,7 +40,7 @@ vector::vector(const vector & right)
 		myFirst[i] = right.myFirst[i];
 	}
 	myLast = myFirst + rights;
-	myEnd = myFirst + rights;
+	myEnd = myFirst + rightc;
 
 
 
@@ -77,9 +77,25 @@ vector& vector::assign(const vector& right)
 	{	
 		const size_type rightc = right.myEnd - right.myFirst;
 		const size_type rights = right.myLast - right.myFirst;
-		const size_type temps = size();
-		const size_type tempc = capacity();
-		const size_type newc = capacity() + capacity() / 2;
+		//const size_type temps = size();
+		//const size_type tempc = capacity();
+		//const size_type newc = capacity() + capacity() / 2;
+
+		
+		pointer newFirst = new value_type [rightc];
+		
+		delete[] myFirst;
+
+		myFirst = newFirst;
+		for(size_type i=0 ; i < rights; i++)
+		{
+			myFirst[i] = right.myFirst[i];
+		}
+		
+		myLast = myFirst + rights;
+		myEnd = myFirst + rightc;
+		
+		/*
 		if (temps >= rights)
 		{
 			for (size_type i = 0; i < rights; i++)
@@ -101,26 +117,30 @@ vector& vector::assign(const vector& right)
 			else if (newc >= rights)
 			{
 				delete[] myFirst;
-				myFirst = new value_type [newc];
+				pointer tmyFirst = new value_type [newc];
 				for (size_type i = 0; i < rights; i++)
 				{
-					myFirst[i] = right.myFirst[i];
+					tmyFirst[i] = right.myFirst[i];
 				}
-				myLast = myFirst + rights;
-				myEnd = myFirst + newc;
+				myLast = tmyFirst + rights;
+				myEnd = tmyFirst + newc;
 			}
 			else if (newc < rights)
 			{
-				delete[] myFirst;
-				myFirst = new value_type[rights];
+				
+				pointer tmyFirst = new value_type[rights];
 				for (size_type i = 0; i < rights; i++)
 				{
-					myFirst[i] = right.myFirst[i];
+					tmyFirst[i] = right.myFirst[i];
 				}
+
+				delete[] myFirst;
+				myFirst = tmyFirst;
 				myLast = myFirst + rights;
-				myEnd = myFirst + rights;
+				myEnd =tmyFirst + rights;
 			}
 		}
+		*/
 	}
 
 	return *this; // enables x = y = z, for example
@@ -138,8 +158,10 @@ vector& vector::assign(const vector& right)
 void vector::resize(const size_type newSize)
 {	
 	size_type tempc = capacity();
-	size_type newc = capacity() + capacity() / 2;
+	size_type newcap = capacity() + capacity() / 2;
 	const size_type temps = size();
+
+	
 	if (temps == newSize)
 	{
 		return;
@@ -160,54 +182,52 @@ void vector::resize(const size_type newSize)
 				myFirst[i] = 0;
 			}
 		}
-		else if ( newc > newSize)
+		else if ( newcap < newSize) // If the 3 // 2 * capacity is smaller than newSize
 		{	
-			
-			value_type* arr = new value_type[temps];
-			for (size_type i = 0; i < temps; i++)
-			{
-				arr[i] = myFirst[i];
-			}
-			delete[] myFirst;
-			myFirst = new value_type[newc];
-			for (size_type i = 0; i < temps; i++)
-			{
-				myFirst[i] = arr[i];
-			}
-			delete[] arr;
-			for (size_type i = temps; i < newSize; i++)
-			{
-				myFirst[i] = 0;
-			}
-			myLast = myFirst + newSize;
-			myEnd = myFirst + newc;
+			value_type * arr = new value_type[newSize];
 
-
-		}
-		else if ( newc <= newSize)
-		{	
-			
-			value_type* arr = new value_type[temps];
-			for (size_type i = 0; i < size(); i++)
+			for (size_type i = 0; i < temps; i++)
 			{
 				arr[i] = myFirst[i];
 			}
 			
 			delete[] myFirst;
-			myFirst = new value_type[newSize];
-			for (size_type i = 0; i < temps; i++)
-			{
-				myFirst[i] = arr[i];
-			}
-			delete[] arr;
+
+			myFirst = arr;
+			
 			for (size_type i = temps; i < newSize; i++)
 			{
-				myFirst[i] = 0;
+				arr[i] = 0;
 			}
 			myEnd = myFirst + newSize;
 			myLast = myFirst + newSize;
 		}
+		else	//  3//2 * capacity is bigger than newSize
+		{	
+			
+			value_type* arr = new value_type[newcap];
+
+			for (size_type i = 0; i < temps; i++)
+			{
+				arr[i] = myFirst[i];
+				
+			}
+
+			delete[] myFirst;
+
+			myFirst = arr;
+
+			for(size_type i=temps; i< newSize;i++)
+				arr[i] = 0;
+			
+		
+			myLast = myFirst + newSize;
+			myEnd = myFirst + newcap;
+		}
+		
 	}
+
+	std::cout << "Now size is " << size() << " and capaccity is " << capacity() << std::endl;
 
 }
 
@@ -259,4 +279,4 @@ vector::value_type& vector::element(const size_type pos)
 	return myFirst[pos];
 }
 
-#endif
+
