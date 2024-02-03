@@ -73,7 +73,48 @@ MSVC 2013 and MSVC 2019 為
 由此可知 GNU vector的分配為size()超過capacity()時, capacity()會以 2的冪次（2's power）的方式增加
 
 
-而 MSVC 是以 capacity() * 3/2 的方式增加
+
+且 GNU vector 的 assign , size()與 capacity()分配方式也與 MSVC 不同,若原本
+被 assign的對象原本沒有任何空間, 則 capacity() = right.size()
+
+以下為程式碼：
+```
+vector& vector::assign(const vector& right)
+{
+	if (this != &right) // avoid self-assignment
+	{	
+		const size_type rightc = right.myEnd - right.myFirst;
+		const size_type rights = right.myLast - right.myFirst;
+		
+		
+		pointer newFirst;
+		
+		// this vector capacity is equal to right.size()
+		if( capacity() == 0){
+			
+			delete[] myFirst;
+			myFirst = newFirst;
+			myLast = myFirst + rights;
+			myEnd = myFirst + rights;
+
+		}else{
+
+			myLast = myFirst + rights;
+		}
+
+				
+		for(size_type i=0 ; i < rights; i++)
+		{
+			myFirst[i] = right.myFirst[i];
+		}
+		
+		
+		
+	}
+
+	return *this; // enables x = y = z, for example
+}
+```
 
 
 # Pointer 的注意事項
