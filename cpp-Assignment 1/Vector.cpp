@@ -103,8 +103,7 @@ vector& vector::assign(const vector& right)
 			myLast = myFirst + rights;
 		}
 
-		
-		
+				
 		for(size_type i=0 ; i < rights; i++)
 		{
 			myFirst[i] = right.myFirst[i];
