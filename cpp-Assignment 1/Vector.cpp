@@ -82,17 +82,6 @@ vector& vector::assign(const vector& right)
 		// this vector capacity is equal to right.size()
 		if( capacity() == 0){
 			
-			
-			newFirst = new value_type [rights];
-			delete[] myFirst;
-			myFirst = newFirst;
-			myLast = myFirst + rights;
-			myEnd = myFirst + rights;
-		}
-		else if (capacity() < rights){
-
-			
-			newFirst = new value_type [rights];
 			delete[] myFirst;
 			myFirst = newFirst;
 			myLast = myFirst + rights;
