@@ -22,8 +22,6 @@ vector::vector(const size_type count)
 	myLast = myFirst + count;
 	myEnd = myFirst + count;
 
-
-
 }
 
 // copy constructor
@@ -33,6 +31,8 @@ vector::vector(const vector & right)
 {
 	const size_type rightc = right.myEnd - right.myFirst;
 	const size_type rights = right.myLast - right.myFirst;
+	
+
 	myFirst = new value_type[rights];
 	
 	for (size_type i = 0; i < rights ; i++)
@@ -40,9 +40,7 @@ vector::vector(const vector & right)
 		myFirst[i] = right.myFirst[i];
 	}
 	myLast = myFirst + rights;
-	myEnd = myFirst + rightc;
-
-
+	myEnd = myFirst + rights;
 
 }
 
@@ -77,70 +75,43 @@ vector& vector::assign(const vector& right)
 	{	
 		const size_type rightc = right.myEnd - right.myFirst;
 		const size_type rights = right.myLast - right.myFirst;
-		//const size_type temps = size();
-		//const size_type tempc = capacity();
-		//const size_type newc = capacity() + capacity() / 2;
+		
+		
+		pointer newFirst;
+		
+		// this vector capacity is equal to right.size()
+		if( capacity() == 0){
+			
+			
+			newFirst = new value_type [rights];
+			delete[] myFirst;
+			myFirst = newFirst;
+			myLast = myFirst + rights;
+			myEnd = myFirst + rights;
+		}
+		else if (capacity() < rights){
+
+			
+			newFirst = new value_type [rights];
+			delete[] myFirst;
+			myFirst = newFirst;
+			myLast = myFirst + rights;
+			myEnd = myFirst + rights;
+
+		}else{
+
+			myLast = myFirst + rights;
+		}
 
 		
-		pointer newFirst = new value_type [rightc];
 		
-		delete[] myFirst;
-
-		myFirst = newFirst;
 		for(size_type i=0 ; i < rights; i++)
 		{
 			myFirst[i] = right.myFirst[i];
 		}
 		
-		myLast = myFirst + rights;
-		myEnd = myFirst + rightc;
 		
-		/*
-		if (temps >= rights)
-		{
-			for (size_type i = 0; i < rights; i++)
-			{
-				myFirst[i] = right.myFirst[i];
-			}
-			myLast = myFirst + rights;
-		}
-		else if ( temps < rights)
-		{
-			if (tempc >= rights)
-			{
-				for (size_type i = 0; i < rights; i++)
-				{
-					myFirst[i] = right.myFirst[i];
-				}
-				myLast = myFirst + rights;
-			}
-			else if (newc >= rights)
-			{
-				delete[] myFirst;
-				pointer tmyFirst = new value_type [newc];
-				for (size_type i = 0; i < rights; i++)
-				{
-					tmyFirst[i] = right.myFirst[i];
-				}
-				myLast = tmyFirst + rights;
-				myEnd = tmyFirst + newc;
-			}
-			else if (newc < rights)
-			{
-				
-				pointer tmyFirst = new value_type[rights];
-				for (size_type i = 0; i < rights; i++)
-				{
-					tmyFirst[i] = right.myFirst[i];
-				}
-
-				delete[] myFirst;
-				myFirst = tmyFirst;
-				myLast = myFirst + rights;
-				myEnd =tmyFirst + rights;
-			}
-		}
-		*/
+		
 	}
 
 	return *this; // enables x = y = z, for example
@@ -158,9 +129,12 @@ vector& vector::assign(const vector& right)
 void vector::resize(const size_type newSize)
 {	
 	size_type tempc = capacity();
-	size_type newcap = capacity() + capacity() / 2;
+	size_type newcap = size()*2;
+	
+	
 	const size_type temps = size();
 
+	
 	
 	if (temps == newSize)
 	{
@@ -182,7 +156,7 @@ void vector::resize(const size_type newSize)
 				myFirst[i] = 0;
 			}
 		}
-		else if ( newcap < newSize) // If the 3 // 2 * capacity is smaller than newSize
+		else if ( newcap < newSize) // If the 2 * size() is smaller than newSize
 		{	
 			value_type * arr = new value_type[newSize];
 
@@ -202,7 +176,7 @@ void vector::resize(const size_type newSize)
 			myEnd = myFirst + newSize;
 			myLast = myFirst + newSize;
 		}
-		else	//  3//2 * capacity is bigger than newSize
+		else	//  2 * size() is bigger than newSize
 		{	
 			
 			value_type* arr = new value_type[newcap];
@@ -227,7 +201,7 @@ void vector::resize(const size_type newSize)
 		
 	}
 
-	std::cout << "Now size is " << size() << " and capaccity is " << capacity() << std::endl;
+	
 
 }
 

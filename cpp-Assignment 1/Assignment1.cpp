@@ -155,11 +155,16 @@ void testAssignment2()
 
       vector1.assign( vector2 );
 
+      
       if( vector2.size() > capacity1 )
          numErrors--;
       else
          if( vector1.begin() == oldAddress )
             numErrors--;
+      
+     /*
+      if( equal( vector2, vector1 ) )
+         numErrors--;*/
    }
 
    // vector1.begin() == oldAddress if and only if
